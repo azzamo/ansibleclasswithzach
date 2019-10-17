@@ -1,0 +1,30 @@
+---
+- name: Find / files ending with .pcap or .pcapng or .txt
+  find:
+          paths: "{{ pathy }}" 
+          #paths: ~/
+          patterns: "{{ patt }}" 
+          #patterns: '*.pcap,*.pcapng,*.txt'
+          #size: 10m       
+          recurse: yes
+  register: results
+
+- name: what the heck is in the results
+  debug:
+          #var: results
+          var: results.files
+          verbosity: 1 
+
+- name: create a directory to save our files using File Module on the localhost ansible controller
+  file:
+         path: "~/searchresults/{{ inventory_hostname }}"
+         state: directory        
+  delegate_to: localhost
+  #run_once: yes 
+
+- name: pull our files back to the controller from remote hosts
+  fetch:
+         src: "{{ item.path }}"
+         dest: "~/searchresults/{{ inventory_hostname }}/"
+         flat: yes
+  loop: "{{ results.files }}"     

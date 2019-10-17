@@ -1,0 +1,35 @@
+---
+- name: Intro to Dictionaries
+  hosts: localhost
+  gather_facts: yes
+
+  vars: 
+        configA: exampleA.cfg
+        configB: exampleB.cfg
+        licensetypes:
+                opentypes:
+                        - apache2.0
+                        - gnu public license (GPL)
+                        - mit license
+                        - mozilla public license
+                paytypes:
+                        - windows
+                        - redhat
+                        - apple
+
+  tasks:
+        - name: Recall a key value pair mapping
+          debug: 
+                  var: configA          
+
+        - name: Recall a key value mapping where the value is a list
+          debug: 
+                  var: licensetypes.opentypes          
+
+        - name: Display the MIT License 
+          debug:
+                  var: licensetypes.opentypes[2]          
+
+        - name: Display the MIT License 
+          debug:
+                  var: licensetypes.opentypes[0]          

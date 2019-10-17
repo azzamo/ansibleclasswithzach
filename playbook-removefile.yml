@@ -1,0 +1,13 @@
+---
+- name: Copying files from controller to hosts
+  hosts: planetexpress
+  gather_facts: yes
+
+  tasks:
+
+         - name: remove file     
+           file:
+             path: "/home/{{ ansible_user }}/fryresume.txt"
+             state: absent
+
+

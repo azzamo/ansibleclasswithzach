@@ -1,0 +1,28 @@
+---
+- name: Install Applications with yum and apt
+  gather_facts: yes
+  hosts: planetexpress
+
+  vars: 
+         aptlist:
+                 - tree 
+         yumlist:
+                 - tree  
+
+  tasks:
+          - name: install applications with apt
+            apt: 
+                state: present
+                name: "{{ aptlist }}"
+
+            become: yes
+            when: ansible_os_family=="Debian"
+
+          - name: install applications with yum 
+            yum: 
+                 state: present
+                 name: "{{ yumlist }}"
+
+            become: yes
+            when: ansible_os_family=="RedHat"
+

@@ -1,0 +1,8 @@
+---
+- name: using my role
+  gather_facts: yes
+  hosts: planetexpress
+
+  roles:
+
+          - todd.findafile

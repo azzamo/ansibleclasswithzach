@@ -1,0 +1,47 @@
+---
+- name: learning about block and rescue to simulate MOP failure and roll back changes
+  hosts: planetexpress
+  gather_facts: yes
+
+  tasks:
+          - name: Pre-check block
+            block:
+                    - name: precheck step1
+                      shell: "echo 'precheck step1' > example.txt"
+
+                    - name: precheck step2
+                      shell: "echo 'precheck step2' >> example.txt"
+
+                    - name: a real example of precheck step
+                      when: ansible_os_family != "Debian"        
+                      fail:
+                              msg: "Precheck FAILED!" 
+
+
+            rescue:
+                    - name: Precheck failed
+                      fail:
+                              msg: "Precheck FAILED for {{ inventory_hostname }}! Nothing to Roll back. Exiting..." 
+
+          - name: Maintenance applying MOP confiuraion
+            block:
+                    - name: maintenance step1
+                      shell: "echo 'maintenance step3' >> example.txt"
+
+                    - name: maintenance step2
+                      shell: "/bin/false"
+
+            rescue: 
+                    - name: roll back my line in the file
+                      lineinfile:
+                              path: example.txt
+                              state: absent
+                              line: "maintenance step3"
+
+                    - name: Figure out how to role back your change and bring system back to baseline before MOP execution
+                      shell: "echo 'maintenance step3 needs a manual roll back' >> example.txt"
+                      
+                      # fail: key word needs to be always at the end of the rescue
+                    - name: fail out of playbook        
+                      fail:
+                              msg: "Precheck FAILED for {{ inventory_hostname }}! Nothing to Roll back. Exiting..." 

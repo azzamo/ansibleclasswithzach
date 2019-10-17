@@ -1,0 +1,7 @@
+---
+snacks:
+        - {name: 'orange', groups: 'fruit'}
+        - {name: 'lemon',  groups: 'fruit'}
+        - {name: 'cookie', groups: 'snack'}
+        - {name: 'carrot', groups: 'vegetables'}
+

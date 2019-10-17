@@ -1,0 +1,51 @@
+---
+- name: Find files and fetch them back to controller
+  gather_facts: yes
+  hosts: planetexpress
+
+
+  vars:
+          # defining variables as default
+          patt: "*.pcap,*.pcapng"
+          pathy: "~/"
+
+  tasks: 
+         # Find files 
+         # register the results (save the results JSON format that come back)
+         # print results to screen using debug module
+         #
+         # create a directory to store our results in local host Ansible Controller
+         #
+         # parse the results that come back (loop)
+         # pull them back to the controller (fetch module)
+        
+         - name: Find / files ending with .pcap or .pcapng or .txt
+           find:
+                   paths: "{{ pathy }}" 
+                   #paths: ~/
+                   patterns: "{{ patt }}" 
+                   #patterns: '*.pcap,*.pcapng,*.txt'
+                   #size: 10m       
+                   recurse: yes
+           register: results
+
+         - name: what the heck is in the results
+           debug:
+                   #var: results
+                   var: results.files
+                   verbosity: 1 
+
+         - name: create a directory to save our files using File Module on the localhost ansible controller
+           file:
+                  path: "~/searchresults/{{ inventory_hostname }}"
+                  state: directory        
+           delegate_to: localhost
+           #run_once: yes 
+
+         - name: pull our files back to the controller from remote hosts
+           fetch:
+                  src: "{{ item.path }}"
+                  dest: "~/searchresults/{{ inventory_hostname }}/"
+                  flat: yes
+           loop: "{{ results.files }}"     
+

@@ -1,0 +1,4 @@
+---
+# defining variables as default
+patt: "*.pcap,*.pcapng"
+pathy: "~/"
